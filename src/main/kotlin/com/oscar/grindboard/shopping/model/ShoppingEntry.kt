@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Hidden
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.CompoundIndex
 import org.springframework.data.mongodb.core.mapping.Document
+import java.math.BigDecimal
 import java.time.LocalDate
 
 @Hidden
@@ -21,4 +22,10 @@ fun ShoppingEntry.toResponse(): ShoppingEntryResponse =
         id = this.id!!,
         date = this.date,
         items = this.items.map { it.toResponse() },
+        totalCost = calculateTotalCost(this),
     )
+
+private fun calculateTotalCost(entry: ShoppingEntry): BigDecimal =
+    entry.items.fold(BigDecimal.ZERO) { initialPrice, item ->
+        initialPrice + (item.pricePerPiece.multiply(BigDecimal(item.quantity)))
+    }

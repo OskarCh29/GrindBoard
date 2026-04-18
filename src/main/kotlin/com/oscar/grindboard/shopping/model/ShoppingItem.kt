@@ -8,7 +8,7 @@ data class ShoppingItem(
     val id: String = UUID.randomUUID().toString(),
     val name: String,
     val quantity: Int = 1,
-    val price: BigDecimal,
+    val pricePerPiece: BigDecimal,
 )
 
 fun ShoppingItem.toResponse(): ShoppingItemResponse =
@@ -16,5 +16,5 @@ fun ShoppingItem.toResponse(): ShoppingItemResponse =
         id = this.id,
         name = this.name,
         quantity = this.quantity,
-        price = this.price,
+        pricePerOne = this.pricePerPiece,
     )

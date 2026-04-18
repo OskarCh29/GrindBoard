@@ -1,6 +1,7 @@
 package com.oscar.grindboard.shopping.dto
 
 import io.swagger.v3.oas.annotations.media.Schema
+import java.math.BigDecimal
 import java.time.LocalDate
 
 @Schema(
@@ -12,4 +13,5 @@ data class ShoppingEntryResponse(
     @Schema(description = "Date of the shopping entry") val date: LocalDate,
     @Schema(description = "List of the bought items for particular shopping day")
     val items: List<ShoppingItemResponse>,
+    val totalCost: BigDecimal,
 )

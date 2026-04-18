@@ -79,6 +79,11 @@ class ShoppingEntryService(
             .findById(entryId)
             .switchIfEmpty(Mono.error(NoSuchElementException("No shopping entry found")))
             .map { entry ->
+                val exists = entry.items.any { it.id == updatedItem.itemId }
+                if (!exists) {
+                    throw NoSuchElementException("Item not found")
+                }
+
                 val updatedItems =
                     entry.items.map { if (it.id == updatedItem.itemId) updatedItem.toDomain() else it }
 

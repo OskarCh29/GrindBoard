@@ -22,5 +22,5 @@ fun ShoppingItemRequest.toDomain(): ShoppingItem =
     ShoppingItem(
         name = this.name,
         quantity = this.quantity,
-        price = this.price,
+        pricePerPiece = this.price,
     )
