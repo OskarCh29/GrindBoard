@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: grindboard
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/grindboard
+      auto-index-creation: true
+springdoc:
+  swagger-ui:
+    path: "/api-docs"
+
