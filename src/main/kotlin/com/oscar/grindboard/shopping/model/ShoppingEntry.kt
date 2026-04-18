@@ -1,20 +1,24 @@
 package com.oscar.grindboard.shopping.model
 
-import io.swagger.v3.oas.annotations.media.Schema
+import com.oscar.grindboard.shopping.dto.ShoppingEntryResponse
+import io.swagger.v3.oas.annotations.Hidden
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.CompoundIndex
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDate
 
-@Schema(
-    description =
-        "Shopping entry containing necessary information regarding shopping for particular date",
-)
+@Hidden
 @Document(collection = "shopping_entries")
 @CompoundIndex(name = "unique_date", def = "{'date': 1}", unique = true)
 data class ShoppingEntry(
-    @Schema(description = "Entry unique ID") @Id val id: String? = null,
-    @Schema(description = "Date of the shopping entry") val date: LocalDate,
-    @Schema(description = "List of the bought items for particular shopping day")
+    @Id val id: String? = null,
+    val date: LocalDate,
     val items: List<ShoppingItem> = emptyList(),
 )
+
+fun ShoppingEntry.toResponse(): ShoppingEntryResponse =
+    ShoppingEntryResponse(
+        id = this.id!!,
+        date = this.date,
+        items = this.items.map { it.toResponse() },
+    )

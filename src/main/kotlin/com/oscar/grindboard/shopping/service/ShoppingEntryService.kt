@@ -1,7 +1,10 @@
 package com.oscar.grindboard.shopping.service
 
-import com.oscar.grindboard.shopping.model.ShoppingEntry
-import com.oscar.grindboard.shopping.model.ShoppingItem
+import com.oscar.grindboard.shopping.dto.ShoppingEntryRequest
+import com.oscar.grindboard.shopping.dto.ShoppingEntryResponse
+import com.oscar.grindboard.shopping.dto.ShoppingItemRequest
+import com.oscar.grindboard.shopping.dto.toDomain
+import com.oscar.grindboard.shopping.model.toResponse
 import com.oscar.grindboard.shopping.repository.ShoppingEntryRepository
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
@@ -11,19 +14,21 @@ import java.time.LocalDate
 class ShoppingEntryService(
     private val shoppingRepository: ShoppingEntryRepository,
 ) {
-    fun addShoppingEntry(entry: ShoppingEntry): Mono<ShoppingEntry> =
-        shoppingRepository.save(entry).onErrorMap {
-            IllegalStateException("Entry for this date already exists")
-        }
+    fun addShoppingEntry(entry: ShoppingEntryRequest): Mono<ShoppingEntryResponse> =
+        shoppingRepository
+            .save(entry.toDomain())
+            .map { shoppingEntry -> shoppingEntry.toResponse() }
+            .onErrorMap { IllegalStateException("Entry for this date already exists") }
 
-    fun getByDate(date: LocalDate): Mono<ShoppingEntry> = shoppingRepository.findByDate(date)
+    fun getByDate(date: LocalDate): Mono<ShoppingEntryResponse> =
+        shoppingRepository.findByDate(date).map { shoppingEntry -> shoppingEntry.toResponse() }
 
     fun delete(id: String): Mono<Void> = shoppingRepository.deleteById(id)
 
     fun addItem(
         id: String,
-        newItem: ShoppingItem,
-    ): Mono<ShoppingEntry> =
+        newItem: ShoppingItemRequest,
+    ): Mono<ShoppingEntryResponse> =
         shoppingRepository
             .findById(id)
             .switchIfEmpty(Mono.error(NoSuchElementException("No shopping entry found")))
@@ -40,15 +45,17 @@ class ShoppingEntryService(
                             }
                         }
                     } else {
-                        entry.items + newItem
+                        entry.items + newItem.toDomain()
                     }
                 entry.copy(items = updatedItems)
-            }.flatMap { shoppingRepository.save(it) }
+            }.flatMap {
+                shoppingRepository.save(it).map { shoppingEntry -> shoppingEntry.toResponse() }
+            }
 
     fun deleteItem(
         id: String,
         itemId: String,
-    ): Mono<ShoppingEntry> =
+    ): Mono<ShoppingEntryResponse> =
         shoppingRepository
             .findById(id)
             .switchIfEmpty(Mono.error(NoSuchElementException("No shopping entry found")))
@@ -60,18 +67,23 @@ class ShoppingEntryService(
                 }
 
                 entry.copy(items = updatedItems)
-            }.flatMap { shoppingRepository.save(it) }
+            }.flatMap {
+                shoppingRepository.save(it).map { shoppingEntry -> shoppingEntry.toResponse() }
+            }
 
     fun updateItem(
         entryId: String,
-        updatedItem: ShoppingItem,
-    ): Mono<ShoppingEntry> =
+        updatedItem: ShoppingItemRequest,
+    ): Mono<ShoppingEntryResponse> =
         shoppingRepository
             .findById(entryId)
             .switchIfEmpty(Mono.error(NoSuchElementException("No shopping entry found")))
             .map { entry ->
-                val updatedItems = entry.items.map { if (it.id == updatedItem.id) updatedItem else it }
+                val updatedItems =
+                    entry.items.map { if (it.id == updatedItem.itemId) updatedItem.toDomain() else it }
 
                 entry.copy(items = updatedItems)
-            }.flatMap { shoppingRepository.save(it) }
+            }.flatMap {
+                shoppingRepository.save(it).map { shoppingEntry -> shoppingEntry.toResponse() }
+            }
 }
