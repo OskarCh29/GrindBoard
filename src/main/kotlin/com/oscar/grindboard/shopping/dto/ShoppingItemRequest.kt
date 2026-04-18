@@ -18,7 +18,7 @@ data class ShoppingItemRequest(
     val price: BigDecimal,
 )
 
-fun ShoppingItemRequest.toDomain(): ShoppingItem =
+internal fun ShoppingItemRequest.toDomain(): ShoppingItem =
     ShoppingItem(
         name = this.name,
         quantity = this.quantity,

@@ -11,13 +11,13 @@ import java.time.LocalDate
 @Hidden
 @Document(collection = "shopping_entries")
 @CompoundIndex(name = "unique_date", def = "{'date': 1}", unique = true)
-data class ShoppingEntry(
+internal data class ShoppingEntry(
     @Id val id: String? = null,
     val date: LocalDate,
     val items: List<ShoppingItem> = emptyList(),
 )
 
-fun ShoppingEntry.toResponse(): ShoppingEntryResponse =
+internal fun ShoppingEntry.toResponse(): ShoppingEntryResponse =
     ShoppingEntryResponse(
         id = this.id!!,
         date = this.date,

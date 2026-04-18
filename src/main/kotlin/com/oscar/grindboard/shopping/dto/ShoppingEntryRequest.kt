@@ -1,4 +1,4 @@
-package com.oscar.grindboard.shopping.dto
+package com.oscar.grindboard.shopping.dtoinal
 
 import com.oscar.grindboard.shopping.model.ShoppingEntry
 import io.swagger.v3.oas.annotations.media.Schema
@@ -17,4 +17,4 @@ data class ShoppingEntryRequest(
     val items: List<ShoppingItemRequest> = emptyList(),
 )
 
-fun ShoppingEntryRequest.toDomain(): ShoppingEntry = ShoppingEntry(date = this.date, items = this.items.map { it.toDomain() })
+internal fun ShoppingEntryRequest.toDomain(): ShoppingEntry = ShoppingEntry(date = this.date, items = this.items.map { it.toDomain() })

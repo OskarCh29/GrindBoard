@@ -1,17 +1,18 @@
 package com.oscar.grindboard.shopping.service
 
-import com.oscar.grindboard.shopping.dto.ShoppingEntryRequest
 import com.oscar.grindboard.shopping.dto.ShoppingEntryResponse
 import com.oscar.grindboard.shopping.dto.ShoppingItemRequest
 import com.oscar.grindboard.shopping.dto.toDomain
+import com.oscar.grindboard.shopping.dtoinal.ShoppingEntryRequest
+import com.oscar.grindboard.shopping.dtoinal.toDomain
 import com.oscar.grindboard.shopping.model.toResponse
 import com.oscar.grindboard.shopping.repository.ShoppingEntryRepository
+import java.time.LocalDate
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
-import java.time.LocalDate
 
 @Service
-class ShoppingEntryService(
+internal class ShoppingService(
     private val shoppingRepository: ShoppingEntryRepository,
 ) {
     fun addShoppingEntry(entry: ShoppingEntryRequest): Mono<ShoppingEntryResponse> =
