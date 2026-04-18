@@ -1,6 +1,6 @@
 services:
   mongodb:
-    image: 'mongo'
+    image: 'mongo:8.2.7'
     ports:
       - "27017:27017"
     volumes:
