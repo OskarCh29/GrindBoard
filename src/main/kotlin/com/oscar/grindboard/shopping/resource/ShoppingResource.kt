@@ -1,9 +1,9 @@
 package com.oscar.grindboard.shopping.resource
 
 import com.oscar.grindboard.common.model.ErrorResponse
+import com.oscar.grindboard.shopping.dto.ShoppingEntryRequest
 import com.oscar.grindboard.shopping.dto.ShoppingEntryResponse
 import com.oscar.grindboard.shopping.dto.ShoppingItemRequest
-import com.oscar.grindboard.shopping.dtoinal.ShoppingEntryRequest
 import com.oscar.grindboard.shopping.service.ShoppingService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
-import java.time.LocalDate
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -25,11 +24,12 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
+import java.time.LocalDate
 
 @RestController
 @RequestMapping("/api/shopping")
 @Tag(name = "Shopping", description = "Daily shopping list with details")
-class ShoppingResource private constructor(
+internal class ShoppingResource(
     private val service: ShoppingService,
 ) {
     @Operation(

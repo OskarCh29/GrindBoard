@@ -19,7 +19,7 @@ internal data class ShoppingEntry(
 
 internal fun ShoppingEntry.toResponse(): ShoppingEntryResponse =
     ShoppingEntryResponse(
-        id = this.id!!,
+        id = this.id ?: throw IllegalArgumentException("Shopping entry id missing"),
         date = this.date,
         items = this.items.map { it.toResponse() },
         totalCost = calculateTotalCost(this),

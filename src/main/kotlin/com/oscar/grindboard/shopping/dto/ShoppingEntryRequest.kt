@@ -1,9 +1,9 @@
-package com.oscar.grindboard.shopping.dtoinal
+package com.oscar.grindboard.shopping.dto
 
 import com.oscar.grindboard.shopping.model.ShoppingEntry
 import io.swagger.v3.oas.annotations.media.Schema
 import jakarta.validation.Valid
-import org.jetbrains.annotations.NotNull
+import jakarta.validation.constraints.NotNull
 import java.time.LocalDate
 
 @Schema(

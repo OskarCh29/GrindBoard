@@ -1,16 +1,17 @@
 package com.oscar.grindboard.shopping.service
 
+import com.mongodb.DuplicateKeyException
+import com.oscar.grindboard.shopping.dto.ShoppingEntryRequest
 import com.oscar.grindboard.shopping.dto.ShoppingEntryResponse
 import com.oscar.grindboard.shopping.dto.ShoppingItemRequest
 import com.oscar.grindboard.shopping.dto.toDomain
-import com.oscar.grindboard.shopping.dtoinal.ShoppingEntryRequest
-import com.oscar.grindboard.shopping.dtoinal.toDomain
 import com.oscar.grindboard.shopping.model.toResponse
 import com.oscar.grindboard.shopping.repository.ShoppingEntryRepository
-import java.time.LocalDate
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
+import java.time.LocalDate
 
+// TODO: Replace illegal state with custom exception
 @Service
 internal class ShoppingService(
     private val shoppingRepository: ShoppingEntryRepository,
@@ -19,7 +20,9 @@ internal class ShoppingService(
         shoppingRepository
             .save(entry.toDomain())
             .map { shoppingEntry -> shoppingEntry.toResponse() }
-            .onErrorMap { IllegalStateException("Entry for this date already exists") }
+            .onErrorMap(DuplicateKeyException::class.java) {
+                IllegalStateException("Entry for this date already exists")
+            }
 
     fun getByDate(date: LocalDate): Mono<ShoppingEntryResponse> =
         shoppingRepository.findByDate(date).map { shoppingEntry -> shoppingEntry.toResponse() }
@@ -63,7 +66,8 @@ internal class ShoppingService(
             .map { entry ->
                 val updatedItems = entry.items.filterNot { it.id == itemId }
 
-                if (updatedItems.size == entry.items.size) {
+                val exists = entry.items.any { item -> item.id == itemId }
+                if (!exists) {
                     throw NoSuchElementException("Item not found")
                 }
 
@@ -86,7 +90,17 @@ internal class ShoppingService(
                 }
 
                 val updatedItems =
-                    entry.items.map { if (it.id == updatedItem.itemId) updatedItem.toDomain() else it }
+                    entry.items.map {
+                        if (it.id == updatedItem.itemId) {
+                            it.copy(
+                                name = updatedItem.name,
+                                quantity = updatedItem.quantity,
+                                pricePerPiece = updatedItem.price,
+                            )
+                        } else {
+                            it
+                        }
+                    }
 
                 entry.copy(items = updatedItems)
             }.flatMap {

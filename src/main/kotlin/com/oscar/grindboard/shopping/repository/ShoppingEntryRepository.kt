@@ -5,6 +5,6 @@ import org.springframework.data.mongodb.repository.ReactiveMongoRepository
 import reactor.core.publisher.Mono
 import java.time.LocalDate
 
-interface ShoppingEntryRepository : ReactiveMongoRepository<ShoppingEntry, String> {
+internal interface ShoppingEntryRepository : ReactiveMongoRepository<ShoppingEntry, String> {
     fun findByDate(date: LocalDate): Mono<ShoppingEntry>
 }
