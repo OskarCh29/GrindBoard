@@ -38,6 +38,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
     testImplementation("org.testcontainers:testcontainers-junit-jupiter")
     testImplementation("org.testcontainers:testcontainers-mongodb")
+    testImplementation("io.mockk:mockk:1.14.9")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
